@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:number_trivia/core/error/failures.dart';
+import 'package:number_trivia/core/usecases/usecase.dart';
 import 'package:number_trivia/core/util/input_converted.dart';
 import 'package:number_trivia/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
@@ -27,7 +30,8 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     @required this.inputConverter,
     // Asserts are how you can make sure that a passed in argument is not null.
     // We omit this elsewhere for the sake of brevity.
-  })  : assert(concrete != null),
+  })
+      : assert(concrete != null),
         assert(random != null),
         assert(inputConverter != null),
         getConcreteNumberTrivia = concrete,
@@ -49,9 +53,43 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
             (failure) async* {
           yield Error(message: INVALID_INPUT_FAILURE_MESSAGE);
         },
-            (integer) => throw UnimplementedError(),
+            (integer) async* {
+          yield Loading();
+          final failureOrTrivia = await getConcreteNumberTrivia(
+            Params(number: integer),
+          );
+          yield* _eitherLoadedOrErrorState(failureOrTrivia);
+        },
       );
     }
+    else if (event is GetTriviaForRandomNumber) {
+      yield Loading();
+      final failureOrTrivia = await getRandomNumberTrivia(
+        NoParams(),
+      );
+      yield* _eitherLoadedOrErrorState(failureOrTrivia);
+    }
+    }
   }
+
+Stream<NumberTriviaState> _eitherLoadedOrErrorState(
+    Either<Failure, NumberTrivia> either,
+    ) async* {
+  yield either.fold(
+        (failure) => Error(message: _mapFailureToMessage(failure)),
+        (trivia) => Loaded(trivia: trivia),
+  );
 }
 
+
+String _mapFailureToMessage(Failure failure) {
+    // Instead of a regular 'if (failure is ServerFailure)...'
+    switch (failure.runtimeType) {
+      case ServerFailure:
+        return SERVER_FAILURE_MESSAGE;
+      case CacheFailure:
+        return CACHE_FAILURE_MESSAGE;
+      default:
+        return 'Unexpected Error';
+    }
+  }
