@@ -20,6 +20,7 @@ class _TriviaControlsState extends State<TriviaControls> {
     return Column(
       children: <Widget>[
         TextField(
+          key: Key('textField'),
           controller: controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
@@ -38,7 +39,10 @@ class _TriviaControlsState extends State<TriviaControls> {
           children: <Widget>[
             Expanded(
               child: RaisedButton(
-                child: Text('Search'),
+                key: Key('searchButton'),
+                child: Text('Search',
+                key: Key('searchText'),
+                ),
                 color: Theme.of(context).accentColor,
                 textTheme: ButtonTextTheme.primary,
                 onPressed: dispatchConcrete,
@@ -47,7 +51,10 @@ class _TriviaControlsState extends State<TriviaControls> {
             SizedBox(width: 10),
             Expanded(
               child: RaisedButton(
-                child: Text('Get random trivia'),
+                key: Key('getRandomTriviaButton'),
+                child: Text('Get random trivia',
+                key: Key('getRandomTriviaText'),
+                ),
                 onPressed: dispatchRandom,
               ),
             ),

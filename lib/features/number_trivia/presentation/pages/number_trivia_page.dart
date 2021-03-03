@@ -14,7 +14,10 @@ class NumberTriviaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Number Trivia'),
+        key: Key('appBarWidgets'),
+        title: Text('Number Trivia',
+        key: Key('numberTriviaText'),
+        ),
       ),
       body: SingleChildScrollView(
         child: buildBody(context),
@@ -36,6 +39,7 @@ class NumberTriviaPage extends StatelessWidget {
                 builder: (context, state) {
                   if (state is Empty) {
                     return MessageDisplay(
+                      key: Key('messageDisplay'),
                       message: 'Start searching!',
                     );
                   } else if (state is Loading) {
