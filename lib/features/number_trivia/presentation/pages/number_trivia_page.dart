@@ -39,7 +39,7 @@ class NumberTriviaPage extends StatelessWidget {
                 builder: (context, state) {
                   if (state is Empty) {
                     return MessageDisplay(
-                      key: Key('messageDisplay'),
+                      // key: Key('messageDisplay'),
                       message: 'Start searching!',
                     );
                   } else if (state is Loading) {

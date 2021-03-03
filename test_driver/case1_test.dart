@@ -6,7 +6,8 @@ void main() {
 
     final appBarWidgets = find.byValueKey('appBarWidgets');
     final numberTriviaText = find.byValueKey('numberTriviaText');
-    final messageDisplay = find.byValueKey('messageDisplay');
+    // final messageDisplay = find.byValueKey('messageDisplay');
+    final messageText = find.byValueKey('messageText');
     final textField = find.byValueKey('textField');
     final searchButton = find.byValueKey('searchButton');
     final searchText = find.byValueKey('searchText');
@@ -34,7 +35,8 @@ void main() {
 
       await driver.waitFor(appBarWidgets);
       expect(await driver.getText(numberTriviaText), "Number Trivia");
-      await driver.waitFor(messageDisplay);
+      // await driver.waitFor(messageDisplay);
+      expect(await driver.getText(messageText), "Start searching!");
       expect(await driver.getText(textField), "");
       await driver.waitFor(searchButton);
       expect(await driver.getText(searchText), "Search");
